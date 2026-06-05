@@ -1,931 +1,403 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Controle de Fichas</title>
-    <meta name="theme-color" content="#49877a">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="theme-color" content="#49877a" />
+    <link href="./css/app.css" rel="stylesheet">
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
     <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-    <style>
-        body {
-            background: linear-gradient(135deg, #49877a 0%, #693809 100%);
-            min-height: 100vh;
-            padding: 10px;
-        }
-
-        .container {
-            max-width: 450px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-            padding: 0;
-        }
-
-        .header {
-            background: #49877a;
-            color: white;
-            padding: 20px;
-            text-align: center;
-            position: relative;
-        }
-
-        .header .btn-settings {
-            position: absolute;
-            right: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255,255,255,0.2);
-            border: none;
-            color: white;
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-        }
-
-        .products-grid {
-            padding: 15px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
-        }
-
-        .product-card {
-            background: #f8fffe;
-            border-radius: 12px;
-            padding: 10px;
-            border: 2px solid #e0f2f1;
-            transition: all 0.3s ease;
-            text-align: center;
-            cursor: pointer;
-            min-height: 100px;
-            position: relative;
-        }
-
-        .product-card .btn-edit {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            background: rgba(73, 135, 122, 0.8);
-            border: none;
-            color: white;
-            border-radius: 50%;
-            width: 20px;
-            height: 20px;
-            font-size: 10px;
-            display: none;
-        }
-
-        .product-card:hover .btn-edit {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .product-image {
-            font-size: 24px;
-            margin-bottom: 5px;
-        }
-
-        .product-name {
-            font-size: 12px;
-            font-weight: 600;
-            color: #2d5016;
-            margin-bottom: 3px;
-            line-height: 1.2;
-        }
-
-        .product-price {
-            background: #49877a;
-            color: white;
-            padding: 3px 10px 3px 10px;
-            border-radius: 7px;
-            font-weight: 900;
-            font-size: 12px;
-            display: inline-block;
-        }
-
-        .cart-section {
-            background: white;
-            padding: 20px;
-            border-top: 1px solid #dee2e6;
-        }
-
-        .cart-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-
-        .cart-title {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .cart-count {
-            background: #49877a;
-            color: white;
-            border-radius: 50%;
-            width: 25px;
-            height: 25px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-            padding-bottom: 10px;
-            border-bottom: 1px solid #dee2e6;
-        }
-
-        .cart-item-info {
-            flex-grow: 1;
-        }
-
-        .cart-item-name {
-            font-weight: 600;
-        }
-
-        .cart-item-price {
-            font-size: 14px;
-            color: #6c757d;
-        }
-
-        .cart-controls {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-quantity {
-            width: 30px;
-            height: 30px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        .quantity {
-            font-size: 16px;
-            font-weight: 600;
-            min-width: 30px;
-            text-align: center;
-        }
-
-        .total-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 15px 0;
-            padding-top: 10px;
-            border-top: 1px solid #dee2e6;
-        }
-
-        .total-label {
-            font-size: 18px;
-            font-weight: 600;
-        }
-
-        .total-value {
-            font-size: 20px;
-            font-weight: bold;
-            color: #28a745;
-        }
-
-        .troco-section {
-            background: #e9f5ff;
-            padding: 10px 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-        }
-
-        .troco-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .troco-label {
-            font-weight: 600;
-        }
-
-        .troco-value {
-            font-size: 18px;
-            font-weight: bold;
-            color: #007bff;
-        }
-
-        .troco-negativo {
-            color: #dc3545 !important;
-        }
-
-        .empty-cart {
-            text-align: center;
-            color: #6c757d;
-            font-style: italic;
-            padding: 20px 0;
-        }
-
-        .modal-content {
-            border-radius: 15px;
-        }
-
-        .report-item {
-            background: #f8f9fa;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            border-left: 4px solid #49877a;
-        }
-
-        .report-detail {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-        }
-
-        .install-prompt {
-            background: #49877a;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            margin-bottom: 10px;
-            border-radius: 10px;
-            display: none;
-        }
-        
-        .valor-recebido {
-            width: 30%;
-        }
-
-        #qrcode {
-            display: flex; 
-            justify-content: center;
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                margin: 0;
-                border-radius: 0;
-                min-height: 100vh;
-            }
-            
-            body {
-                padding: 0;
-            }
-        }
-    </style>
-</head>
-<body>
+  </head>
+  <body>
     <div id="installPrompt" class="install-prompt">
-        <div>📱 Instale este app no seu celular para usar offline!</div>
-        <button id="installBtn" class="btn btn-light btn-sm mt-2">Instalar App</button>
+      <div>📱 Instale este app no seu celular para usar offline!</div>
+      <button id="installBtn" class="btn btn-light btn-sm mt-2">
+        Instalar App
+      </button>
     </div>
 
     <div class="container">
-        <div class="header">
-            <button class="btn-settings" onclick="showProductManager()" title="Gerenciar Produtos">
-                ⚙️
-            </button>
-            <h1 class="h4 mb-1">Controle de Fichas</h1>
-            <p class="mb-0">Festa de Santo Antônio 2025</p>
+      <div class="header">
+        <button
+          class="btn-settings"
+          onclick="showSettingsMenu()"
+          title="Configurações"
+        >
+          ☰
+        </button>
+        <h1 class="h4 mb-1">Controle de Fichas</h1>
+      </div>
+
+      <div class="products-grid" id="products-grid">
+        <!-- Produtos serão carregados dinamicamente -->
+      </div>
+
+      <div class="cart-section">
+        <div class="cart-header">
+          <span class="cart-title">Ficha(s)</span>
+          <span class="cart-count" id="cart-count">0</span>
+        </div>
+        <div id="cart-items"></div>
+
+        <div class="total-row">
+          <span class="total-label">Total:</span>
+          <span class="total-value" id="total-valor">R$ 0,00</span>
         </div>
 
-        <div class="products-grid" id="products-grid">
-            <!-- Produtos serão carregados dinamicamente -->
+        <!-- Resumo do Pagamento -->
+        <div class="payment-summary" id="payment-summary" style="display: none">
+          <div class="payment-row">
+            <span class="payment-label">Valor Recebido:</span>
+            <span
+              class="payment-value payment-received"
+              id="valor-recebido-display"
+              >R$ 0,00</span
+            >
+          </div>
+          <div class="payment-row">
+            <span class="payment-label">Troco:</span>
+            <span class="payment-value payment-change" id="troco-valor"
+              >R$ 0,00</span
+            >
+          </div>
         </div>
 
-        <div class="cart-section">
-            <div class="cart-header">
-                <span class="cart-title">Ficha(s)</span>
-                <span class="cart-count" id="cart-count">0</span>
-            </div>
-            <div id="cart-items"></div>
-            
-            <div class="total-row">
-                <span class="total-label">Total:</span>
-                <span class="total-value" id="total-valor">R$ 0,00</span>
-            </div>
-            
-            <div class="total-row">
-                <label for="valor-recebido" class="form-label fw-bold">Valor Recebido:</label>
-                <input type="text" class="form-control text-end valor-recebido" id="valor-recebido" placeholder="0,00" inputmode="numeric" pattern="[0-9,]*" oninput="formatCurrencyInput(this); calculateChange()">
-            </div>
-            
-            <div class="troco-section" id="troco-display" style="display: none;">
-                <div class="troco-row">
-                    <span class="troco-label">Troco:</span>
-                    <span class="troco-value" id="troco-valor">R$ 0,00</span>
-                </div>
-            </div>
+         Botões de Cédulas
+        <div class="money-buttons">
+          <button class="btn btn-money btn-money-2" onclick="addMoney(2)">
+            R$ 2
+          </button>
+          <button class="btn btn-money btn-money-5" onclick="addMoney(5)">
+            R$ 5
+          </button>
+          <button class="btn btn-money btn-money-10" onclick="addMoney(10)">
+            R$ 10
+          </button>
+          <button class="btn btn-money btn-money-20" onclick="addMoney(20)">
+            R$ 20
+          </button>
+          <button class="btn btn-money btn-money-50" onclick="addMoney(50)">
+            R$ 50
+          </button>
+          <button class="btn btn-money btn-money-100" onclick="addMoney(100)">
+            R$ 100
+          </button>
+          <button class="btn btn-money btn-money-200" onclick="addMoney(200)">
+            R$ 200
+          </button>
+          <button class="btn btn-danger btn-clear-money" onclick="clearMoney()">
+            APAGAR
+          </button>
         </div>
+      </div>
 
-        <div class="p-3">
-            <div class="d-grid gap-2 mb-2">
-                <button class="btn btn-success" onclick="showPixQRCode()">
-                    📱 Gerar PIX
-                </button>
-            </div>
-            <div class="d-flex w-100 mb-2">
-                <button class="btn btn-danger me-2 flex-fill" onclick="cancelOrder()">
-                    <i class="bi bi-trash"></i> Cancelar
-                </button>
-                <button class="btn btn-primary flex-fill" onclick="finishOrder()">
-                    <i class="bi bi-check-circle"></i> Finalizar Venda
-                </button>
-            </div>
+      <div class="p-2">
+<!--        <div class="d-grid gap-2 mb-2">-->
+<!--          <button class="btn btn-success py-2 fs-6" onclick="showPixQRCode()">-->
+<!--            ❖ Gerar PIX-->
+<!--          </button>-->
+<!--        </div>-->
+        <div class="d-flex w-100 mb-2">
+          <button
+            class="btn btn-danger me-2 flex-fill py-2 fs-6"
+            onclick="cancelOrder()"
+          >
+            <i class="bi bi-trash"></i> Cancelar
+          </button>
+          <button
+            class="btn btn-primary flex-fill py-2 fs-6"
+            onclick="finishOrder()"
+          >
+            <i class="bi bi-check-circle"></i> Finalizar Venda
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal do Menu de Configurações -->
+    <div
+      class="modal fade"
+      id="settingsMenuModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Configurações</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
             <div class="d-grid gap-2">
-                <button class="btn btn-outline-secondary" onclick="showReport()">
-                    <i class="bi bi-graph-up"></i> Resumo de Venda
-                </button>
+              <button
+                class="btn btn-outline-primary"
+                onclick="showProductManager()"
+              >
+                🍔 Gerenciar Produtos
+              </button>
+              <button
+                class="btn btn-outline-success"
+                onclick="showPixSettings()"
+              >
+                ❖ Configurar PIX
+              </button>
+              <button
+                class="btn btn-outline-info"
+                onclick="showReportFromMenu()"
+              >
+                📊 Resumo de Vendas
+              </button>
             </div>
+          </div>
         </div>
+      </div>
+    </div>
+
+    <!-- Modal de Configurações PIX -->
+    <div
+      class="modal fade"
+      id="pixSettingsModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Configurações PIX</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="pixSettingsForm">
+              <div class="mb-3">
+                <label for="pixKey" class="form-label">Chave PIX</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="pixKey"
+                  placeholder="Ex: +5583996159696 ou email@exemplo.com"
+                  required
+                />
+                <div class="form-text">
+                  Pode ser telefone, email, CPF ou chave aleatória
+                </div>
+              </div>
+              <div class="mb-3">
+                <label for="pixName" class="form-label"
+                  >Nome do Recebedor</label
+                >
+                <input
+                  type="text"
+                  class="form-control"
+                  id="pixName"
+                  placeholder="Ex: JOSE RONALDO M DA COSTA"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="pixCity" class="form-label">Cidade</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="pixCity"
+                  placeholder="Ex: PIANCO"
+                  required
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-success"
+              onclick="savePixSettings()"
+            >
+              Salvar Configurações
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Modal do Relatório -->
     <div class="modal fade" id="reportModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Resumo de Venda</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div id="reportContent"></div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-success w-100" onclick="shareReport()">
-                        <i class="bi bi-whatsapp"></i> Compartilhar
-                    </button>
-                </div>
-            </div>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Resumo de Venda</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div id="reportContent"></div>
+          </div>
         </div>
+      </div>
     </div>
 
     <!-- Modal de Gerenciamento de Produtos -->
-    <div class="modal fade" id="productManagerModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Gerenciar Produtos</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <button class="btn btn-primary w-100" onclick="showAddProductForm()">
-                            ➕ Adicionar Produto
-                        </button>
-                    </div>
-                    <div id="productsList"></div>
-                </div>
+    <div
+      class="modal fade"
+      id="productManagerModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">Gerenciar Produtos</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <button
+                class="btn btn-primary w-100"
+                onclick="showAddProductForm()"
+              >
+                ➕ Adicionar Produto
+              </button>
             </div>
+            <div id="productsList"></div>
+          </div>
         </div>
+      </div>
     </div>
 
     <!-- Modal de Adicionar/Editar Produto -->
-    <div class="modal fade" id="productFormModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="productFormTitle">Adicionar Produto</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="productForm">
-                        <div class="mb-3">
-                            <label for="productEmoji" class="form-label">Emoji</label>
-                            <input type="text" class="form-control" id="productEmoji" maxlength="2" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="productName" class="form-label">Nome</label>
-                            <input type="text" class="form-control" id="productName" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="productPrice" class="form-label">Preço (R$)</label>
-                            <input type="number" class="form-control" id="productPrice" step="0.01" min="0" required>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-primary" onclick="saveProduct()">Salvar</button>
-                </div>
-            </div>
+    <div
+      class="modal fade"
+      id="productFormModal"
+      tabindex="-1"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="productFormTitle">Adicionar Produto</h5>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            ></button>
+          </div>
+          <div class="modal-body">
+            <form id="productForm">
+              <div class="mb-3">
+                <label for="productEmoji" class="form-label">Emoji</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="productEmoji"
+                  maxlength="2"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="productName" class="form-label">Nome</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="productName"
+                  required
+                />
+              </div>
+              <div class="mb-3">
+                <label for="productPrice" class="form-label">Preço (R$)</label>
+                <input
+                  type="number"
+                  class="form-control"
+                  id="productPrice"
+                  step="0.01"
+                  min="0"
+                  required
+                />
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button
+              type="button"
+              class="btn btn-secondary"
+              data-bs-dismiss="modal"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="saveProduct()"
+            >
+              Salvar
+            </button>
+          </div>
         </div>
+      </div>
     </div>
 
     <!-- Modal do QR Code PIX -->
     <div class="modal fade" id="pixModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">PIX</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body text-center">
-                    <h3 class="text-success mb-4" id="pixValue">R$ 0,00</h3>
-                    <div id="qrcode"></div>
-                </div>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header justify-content-center border-0 pb-0">
+            <h1 class="text-success mb-0" id="pixValue">R$ 0,00</h1>
+          </div>
+          <div id="confirmarPix" class="modal-body text-center pt-2">
+
+            <div id="qrcode"></div>
+            <h3 id="aguardando" class="text-danger mb-4">
+              Aguardando pagamento...
+            </h3>
+            <div id="pixSummary" class="mb-3">
+              <!-- Resumo da compra será inserido aqui -->
             </div>
+          </div>
+          <div class="p-2 d-grid gap-3 mb-2">
+            <button
+              type="button"
+              class="btn btn-success"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            >
+              Fechar
+            </button>
+          </div>
         </div>
+      </div>
     </div>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        // Produtos padrão
-        let products = JSON.parse(localStorage.getItem('products')) || {
-            lanche: { name: 'Lanche', price: 7.00, emoji: '🍔' },
-            refrigerante: { name: 'Refrigerante', price: 3.00, emoji: '🥤' },
-            agua: { name: 'Água Mineral', price: 2.00, emoji: '💧' },
-            refeicao: { name: 'Refeição', price: 10.00, emoji: '🍽️' }
-            
-        };
-
-        // Estado atual do carrinho
-        let currentCart = {};
-
-        // Dados históricos
-        let salesHistory = JSON.parse(localStorage.getItem('festa-santo-antonio-2025')) || {
-            totalFichas: 0,
-            totalValor: 0
-        };
-
-        // Variáveis dos modais
-        let reportModal, productManagerModal, productFormModal, pixModal;
-        let editingProductId = null;
-
-        // Inicializar
-        document.addEventListener('DOMContentLoaded', function() {
-            reportModal = new bootstrap.Modal(document.getElementById('reportModal'));
-            productManagerModal = new bootstrap.Modal(document.getElementById('productManagerModal'));
-            productFormModal = new bootstrap.Modal(document.getElementById('productFormModal'));
-            pixModal = new bootstrap.Modal(document.getElementById('pixModal'));
-            
-            initializeCart();
-            renderProducts();
-            updateCartDisplay();
-            updatePaymentSection();
-        });
-
-        // Inicializar carrinho baseado nos produtos
-        function initializeCart() {
-            currentCart = {};
-            for (let productId in products) {
-                currentCart[productId] = 0;
-                if (!salesHistory[productId]) {
-                    salesHistory[productId] = { fichas: 0, valor: 0 };
-                }
-            }
-        }
-
-        // Renderizar produtos
-        function renderProducts() {
-            const grid = document.getElementById('products-grid');
-            let html = '';
-            
-            for (let productId in products) {
-                const product = products[productId];
-                html += `
-                    <div class="product-card" onclick="addToCart('${productId}')">
-                        <!-- <button class="btn-edit" onclick="event.stopPropagation(); editProduct('${productId}')" title="Editar">
-                          ✏️
-                        </button> -->
-                        <div class="product-image">${product.emoji}</div>
-                        <div class="product-name">${product.name}</div>
-                        <div class="product-price">R$ ${product.price.toFixed(2).replace('.', ',')}</div>
-                    </div>
-                `;
-            }
-            
-            grid.innerHTML = html;
-        }
-
-        // Adicionar ao carrinho
-        function addToCart(productId) {
-            if (!currentCart[productId]) currentCart[productId] = 0;
-            currentCart[productId]++;
-            updateCartDisplay();
-            updatePaymentSection();
-            
-            if (navigator.vibrate) {
-                navigator.vibrate(50);
-            }
-        }
-
-        // Atualizar quantidade no carrinho
-        function updateCartQuantity(productId, change) {
-            const newQty = Math.max(0, (currentCart[productId] || 0) + change);
-            currentCart[productId] = newQty;
-            updateCartDisplay();
-            updatePaymentSection();
-            
-            if (navigator.vibrate && change !== 0) {
-                navigator.vibrate(50);
-            }
-        }
-
-        // Atualizar exibição do carrinho
-        function updateCartDisplay() {
-            const cartItems = document.getElementById('cart-items');
-            const cartCount = document.getElementById('cart-count');
-            let html = '';
-            let totalItems = 0;
-
-            const hasItems = Object.values(currentCart).some(qty => qty > 0);
-            
-            if (!hasItems) {
-                html = '<div class="empty-cart">Escolha uma ficha</div>';
-                totalItems = 0;
-            } else {
-                for (let productId in currentCart) {
-                    const qty = currentCart[productId];
-                    if (qty > 0 && products[productId]) {
-                        totalItems += qty;
-                        const product = products[productId];
-                        html += `
-                            <div class="cart-item">
-                                <div class="cart-item-info">
-                                    <div class="cart-item-name">${product.name}</div>
-                                    <div class="cart-item-price">R$ ${product.price.toFixed(2).replace('.', ',')} x ${qty}</div>
-                                </div>
-                                <div class="cart-controls">
-                                    <button class="btn btn-outline-danger btn-sm btn-quantity" onclick="updateCartQuantity('${productId}', -1)">−</button>
-                                    <div class="quantity">${qty}</div>
-                                    <button class="btn btn-outline-success btn-sm btn-quantity" onclick="updateCartQuantity('${productId}', 1)">+</button>
-                                </div>
-                            </div>
-                        `;
-                    }
-                }
-            }
-
-            cartItems.innerHTML = html;
-            cartCount.textContent = totalItems;
-        }
-
-        // Atualizar seção de pagamento
-        function updatePaymentSection() {
-            let totalValor = 0;
-
-            for (let productId in currentCart) {
-                if (products[productId]) {
-                    totalValor += currentCart[productId] * products[productId].price;
-                }
-            }
-
-            document.getElementById('total-valor').textContent = formatCurrency(totalValor);
-            calculateChange();
-        }
-
-        // Formatar entrada de moeda
-        function formatCurrencyInput(input) {
-            let value = input.value.replace(/\D/g, '');
-            value = (value / 100).toFixed(2);
-            value = value.replace('.', ',');
-            value = value.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
-            input.value = value;
-        }
-
-        // Calcular troco
-        function calculateChange() {
-            const totalElement = document.getElementById('total-valor');
-            const receivedInput = document.getElementById('valor-recebido');
-            const trocoDisplay = document.getElementById('troco-display');
-            const trocoValor = document.getElementById('troco-valor');
-
-            const totalValue = parseFloat(totalElement.textContent.replace('R$', '').replace('.', '').replace(',', '.')) || 0;
-            const receivedValue = parseFloat(receivedInput.value.replace('.', '').replace(',', '.')) || 0;
-
-            if (receivedValue > 0) {
-                const change = receivedValue - totalValue;
-                trocoDisplay.style.display = 'block';
-                trocoValor.textContent = formatCurrency(Math.abs(change));
-                
-                if (change >= 0) {
-                    trocoValor.className = 'troco-value';
-                    trocoDisplay.querySelector('.troco-label').textContent = 'Troco:';
-                } else {
-                    trocoValor.className = 'troco-value troco-negativo';
-                    trocoDisplay.querySelector('.troco-label').textContent = 'Falta:';
-                }
-            } else {
-                trocoDisplay.style.display = 'none';
-            }
-        }
-
-        // Formatar moeda
-        function formatCurrency(value) {
-            return new Intl.NumberFormat('pt-BR', {
-                style: 'currency',
-                currency: 'BRL'
-            }).format(value);
-        }
-
-        // Cancelar pedido
-        function cancelOrder() {
-            for (let productId in currentCart) {
-                currentCart[productId] = 0;
-            }
-            document.getElementById('valor-recebido').value = '';
-            updateCartDisplay();
-            updatePaymentSection();
-        }
-
-        // Finalizar pedido
-        function finishOrder() {
-            const hasItems = Object.values(currentCart).some(qty => qty > 0);
-            if (!hasItems) {
-                return;
-            }
-
-            saveSaleToHistory();
-            
-            for (let productId in currentCart) {
-                currentCart[productId] = 0;
-            }
-            document.getElementById('valor-recebido').value = '';
-            updateCartDisplay();
-            updatePaymentSection();
-        }
-
-        // Salvar venda no histórico
-        function saveSaleToHistory() {
-            for (let productId in currentCart) {
-                const qty = currentCart[productId];
-                if (qty > 0 && products[productId]) {
-                    const valor = qty * products[productId].price;
-                    
-                    if (!salesHistory[productId]) {
-                        salesHistory[productId] = { fichas: 0, valor: 0 };
-                    }
-                    
-                    salesHistory[productId].fichas += qty;
-                    salesHistory[productId].valor += valor;
-                    salesHistory.totalFichas += qty;
-                    salesHistory.totalValor += valor;
-                }
-            }
-            
-            localStorage.setItem('festa-santo-antonio-2025', JSON.stringify(salesHistory));
-        }
-
-        // Mostrar relatório
-        function showReport() {
-            const content = document.getElementById('reportContent');
-            
-            let html = '<div class="text-center mb-4">';
-            html += '<h3 class="text-success">Valor Total</h3>';
-            html += `<h2 class="text-success fw-bold">${formatCurrency(salesHistory.totalValor)}</h2>`;
-            html += '</div>';
-
-            for (let productId in products) {
-                const product = products[productId];
-                const data = salesHistory[productId] || { fichas: 0, valor: 0 };
-                html += '<div class="report-item">';
-                html += `<h5>${product.emoji} ${product.name} (R$ ${product.price.toFixed(2).replace('.', ',')})</h5>`;
-                html += `<div class="report-detail"><span>Fichas Vendidas:</span><strong>${data.fichas}</strong></div>`;
-                html += `<div class="report-detail"><span>Valor Arrecadado:</span><strong>${formatCurrency(data.valor)}</strong></div>`;
-                html += '</div>';
-            }
-
-            html += '<div class="mt-3 d-grid">';
-            html += '<button class="btn btn-danger" onclick="resetHistory()">Apagar</button>';
-            html += '</div>';
-
-            content.innerHTML = html;
-            reportModal.show();
-        }
-
-        // Compartilhar relatório
-        async function shareReport() {
-            try {
-                const reportContent = document.getElementById('reportContent');
-                const canvas = await html2canvas(reportContent, {
-                    backgroundColor: '#ffffff',
-                    scale: 2
-                });
-                
-                canvas.toBlob(async (blob) => {
-                    const file = new File([blob], 'relatorio-festa-santo-antonio.png', { type: 'image/png' });
-                    
-                    if (navigator.share && navigator.canShare({ files: [file] })) {
-                        await navigator.share({
-                            title: 'Relatório - Festa de Santo Antônio 2025',
-                            text: `Relatório de Vendas\nTotal de Fichas: ${salesHistory.totalFichas}\nValor Total: ${formatCurrency(salesHistory.totalValor)}`,
-                            files: [file]
-                        });
-                    } else {
-                        const text = encodeURIComponent(`*Relatório - Festa de Santo Antônio 2025*\n\n📊 *Resumo Geral*\nTotal de Fichas: ${salesHistory.totalFichas}\nValor Total: ${formatCurrency(salesHistory.totalValor)}\n\n${Object.keys(products).map(productId => `${products[productId].emoji} *${products[productId].name}*\nFichas: ${salesHistory[productId]?.fichas || 0}\nValor: ${formatCurrency(salesHistory[productId]?.valor || 0)}`).join('\n\n')}`);
-                        window.open(`https://wa.me/?text=${text}`, '_blank');
-                    }
-                });
-            } catch (error) {
-                console.error('Erro ao compartilhar:', error);
-                alert('Erro ao compartilhar. Tente novamente.');
-            }
-        }
-
-        // Resetar histórico
-        function resetHistory() {
-            if (confirm('Deseja limpar todo o histórico de vendas? Esta ação não pode ser desfeita.')) {
-                salesHistory = { totalFichas: 0, totalValor: 0 };
-                for (let productId in products) {
-                    salesHistory[productId] = { fichas: 0, valor: 0 };
-                }
-                localStorage.setItem('festa-santo-antonio-2025', JSON.stringify(salesHistory));
-                reportModal.hide();
-                alert('Histórico limpo com sucesso!');
-            }
-        }
-
-        // Gerenciamento de Produtos
-        function showProductManager() {
-            renderProductsList();
-            productManagerModal.show();
-        }
-
-        function renderProductsList() {
-            const list = document.getElementById('productsList');
-            let html = '';
-            
-            for (let productId in products) {
-                const product = products[productId];
-                html += `
-                    <div class="card mb-2">
-                        <div class="card-body d-flex justify-content-between align-items-center">
-                            <div>
-                                <span class="me-2">${product.emoji}</span>
-                                <strong>${product.name}</strong>
-                                <br>
-                                <small class="text-muted">R$ ${product.price.toFixed(2).replace('.', ',')}</small>
-                            </div>
-                            <div>
-                                <button class="btn btn-sm btn-outline-primary me-1" onclick="editProduct('${productId}')">
-                                    ✏️
-                                </button>
-                                <button class="btn btn-sm btn-outline-danger" onclick="deleteProduct('${productId}')">
-                                    🗑️
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
-            
-            list.innerHTML = html;
-        }
-
-        function showAddProductForm() {
-            editingProductId = null;
-            document.getElementById('productFormTitle').textContent = 'Adicionar Produto';
-            document.getElementById('productForm').reset();
-            productFormModal.show();
-        }
-
-        function editProduct(productId) {
-            editingProductId = productId;
-            const product = products[productId];
-            document.getElementById('productFormTitle').textContent = 'Editar Produto';
-            document.getElementById('productEmoji').value = product.emoji;
-            document.getElementById('productName').value = product.name;
-            document.getElementById('productPrice').value = product.price;
-            productFormModal.show();
-        }
-
-        function saveProduct() {
-            const emoji = document.getElementById('productEmoji').value.trim();
-            const name = document.getElementById('productName').value.trim();
-            const price = parseFloat(document.getElementById('productPrice').value);
-
-            if (!emoji || !name || !price || price <= 0) {
-                alert('Preencha todos os campos corretamente!');
-                return;
-            }
-
-            if (editingProductId) {
-                // Editando produto existente
-                products[editingProductId] = { emoji, name, price };
-            } else {
-                // Adicionando novo produto
-                const productId = name.toLowerCase().replace(/\s+/g, '_').replace(/[^a-z0-9_]/g, '');
-                products[productId] = { emoji, name, price };
-                currentCart[productId] = 0;
-                salesHistory[productId] = { fichas: 0, valor: 0 };
-            }
-
-            localStorage.setItem('products', JSON.stringify(products));
-            localStorage.setItem('festa-santo-antonio-2025', JSON.stringify(salesHistory));
-            
-            renderProducts();
-            renderProductsList();
-            updateCartDisplay();
-            updatePaymentSection();
-            productFormModal.hide();
-        }
-
-        function deleteProduct(productId) {
-            if (confirm('Deseja excluir este produto?')) {
-                delete products[productId];
-                delete currentCart[productId];
-                delete salesHistory[productId];
-                
-                localStorage.setItem('products', JSON.stringify(products));
-                localStorage.setItem('festa-santo-antonio-2025', JSON.stringify(salesHistory));
-                
-                renderProducts();
-                renderProductsList();
-                updateCartDisplay();
-                updatePaymentSection();
-            }
-        }
-
-        // Gerar QR Code PIX
-        function showPixQRCode() {
-            const totalElement = document.getElementById('total-valor');
-            const totalValue = parseFloat(totalElement.textContent.replace('R$', '').replace('.', '').replace(',', '.')) || 0;
-            
-            if (totalValue <= 0) {
-                alert('Adicione itens ao carrinho para gerar o PIX!');
-                return;
-            }
-
-            document.getElementById('pixValue').textContent = formatCurrency(totalValue);
-            generatePixQRCode(totalValue);
-            pixModal.show();
-        }
-
-        function generatePixQRCode(valor) {
-            const payload = gerarPayloadPix(valor);
-            
-            const qrCodeElement = document.getElementById('qrcode');
-            qrCodeElement.innerHTML = '';
-            
-            new QRCode(qrCodeElement, {
-                text: payload,
-                width: 350,
-                height: 350,
-                colorDark: '#000000',
-                colorLight: '#ffffff'
-            });
-        }
-
-        // Funções PIX (baseadas no código fornecido)
-        function gerarPayloadPix(valor) {
-            function format(id, value) {
-                const size = value.length.toString().padStart(2, "0");
-                return id + size + value;
-            }
-
-            const chave = '+5583996159696';
-            const merchantAccountInfo = format("26", format("00", "br.gov.bcb.pix") + format("01", chave));
-            const additionalDataField = format("62", format("05", "***"));
-
-            const payloadSemCRC =
-                format("00", "01") +
-                merchantAccountInfo +
-                format("52", "0000") +
-                format("53", "986") +
-                format("54", valor.toFixed(2)) +
-                format("58", "BR") +
-                format("59", 'JOSE RONALDO M DA COSTA') +
-                format("60", 'PIANCO') +
-                additionalDataField +
-                "6304";
-
-            const crc = calcularCRC16(payloadSemCRC);
-            return payloadSemCRC + crc;
-        }
-
-        function calcularCRC16(str) {
-            let crc = 0xffff;
-            for (let i = 0; i < str.length; i++) {
-                crc ^= str.charCodeAt(i) << 8;
-                for (let j = 0; j < 8; j++) {
-                    if ((crc & 0x8000) !== 0) {
-                        crc = (crc << 1) ^ 0x1021;
-                    } else {
-                        crc <<= 1;
-                    }
-                }
-                crc &= 0xffff;
-            }
-            return crc.toString(16).toUpperCase().padStart(4, "0");
-        }
-    </script>
-</body>
+    <script src="./js/app.js"></script>
+  </body>
 </html>
